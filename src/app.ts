@@ -1,14 +1,23 @@
 import WebSocket from 'ws';
 import http from 'http';
-import express from 'express';
+import express, { Application } from 'express';
 import mongoose from 'mongoose';
-import { Team } from './structures/Team';
+import { routes } from './routes';
+import bodyParser from 'body-parser';
 
-const app = express();
+
+const app: Application = express();
 const port = 3000;
 const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
 const mongoDb = "mongodb://127.0.0.1/esports  ";
+
+// body-parser
+app.use(bodyParser.json({ limit: '50mb', type: 'application/json' }));
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
+
+// routes
+app.use('/', routes);
 
 mongoose.connect(mongoDb);
 const db = mongoose.connection;
@@ -26,10 +35,6 @@ wss.on('connection', (ws: WebSocket) => {
   //send immediatly a feedback to the incoming connection    
   ws.send('CONNECTED');
 });
-
-app.get('/', (req, res) => {
-  res.send('Hello World!')
-})
 
 //start our server
 server.listen(process.env.PORT || port, () => {
