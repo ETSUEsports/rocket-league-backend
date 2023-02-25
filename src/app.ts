@@ -6,10 +6,12 @@ import bodyParser from 'body-parser';
 
 import { TeamController } from './controllers/TeamController';
 import { WSSBcast } from './structures/WSBcast';
+import { SeriesController } from './controllers/SeriesController';
 declare global {
   namespace Express {
     interface Application {
       teamController: TeamController,
+      seriesController: SeriesController,
       webSocketServer: WSSBcast
     }
   }
@@ -21,17 +23,19 @@ const port = 3000;
 const server = http.createServer(app);
 const wss = new WSSBcast({ server });
 const teamController = new TeamController(wss);
+const seriesController = new SeriesController(wss);
 // body-parser
 app.use(bodyParser.json({ limit: '50mb', type: 'application/json' }));
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 app.teamController = teamController;
+app.seriesController = seriesController;
 app.webSocketServer = wss;
 // routes
 app.use('/', routes);
 wss.on('connection', (ws: WebSocket) => {
   const message = JSON.stringify({"event": "control:connected", "data": "OK"});
   ws.send(message);
-  const message2 = JSON.stringify({"event": "control:initailize", "teams": teamController.getTeams()});
+  const message2 = JSON.stringify({"event": "control:initailize", "teams": teamController.getTeams(), "series": seriesController.getSeries()});
   ws.send(message2);
 });
 

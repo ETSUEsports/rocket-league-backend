@@ -2,10 +2,6 @@ import { Router } from 'express';
 
 export const TeamRoutes = Router();
 
-TeamRoutes.get('/api/teams', (req, res) => {
-  res.send("Hello World!");
-});
-
 TeamRoutes.get('/api/v1/teams/left', (req, res) => {
   res.send(req.app.teamController.leftTeam);
 });
