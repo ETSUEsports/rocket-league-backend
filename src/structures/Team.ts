@@ -1,9 +1,7 @@
-import { Side } from '../enums/Side';
-
 export class Team {
-    private _name: string;
-    private _image: string;
-    private _side: Side;
+    private name: string;
+    private image: string;
+    private score: number;
 
     /**
      * Default Constructor for the Team class
@@ -14,54 +12,36 @@ export class Team {
      * @returns A new Team object
      *
     */
-    constructor(name: string, image: string, side: Side, score: number = 0) {
-        this._name = name;
-        this._image = image;
-        this._side = side;
+    constructor(name: string, image: string, score: number = 0) {
+        this.name = name;
+        this.image = image;
+        this.score = score;
     }
 
-    /**
-     * Get the name of the team
-     * @returns The name of the team
-     * @readonly
-     * @memberof Team
-     * @public
-    */
-    public get name(): string {
-        return this._name;
+    public addScore(): void {
+        if (this.score >= 9) {
+            this.score = 9;
+        }
+        else {
+            this.score++;
+        }
     }
 
-    /**
-     * Get the image of the team
-     * @returns The image of the team
-     * @readonly
-     * @memberof Team
-     * @public
-     */
-    public get image(): string {
-        return this._image;
+    public removeScore(): void {
+        if (this.score <= 0) {
+            this.score = 0;
+        }
+        else {
+            this.score--;
+        }
     }
     
-    /**
-     * Get the side of the team
-     * @returns The side of the team
-     * @readonly
-     * @memberof Team
-     * @public
-     * @see Side
-    */
-    public get side(): Side {
-        return this._side;
+    public setName(name: string): void {
+        this.name = name;
     }
 
-    /**
-     * Swap the side of the team
-     * @memberof Team
-     * @public
-     * @see Side
-    */
-    public swapSide(): void {
-        this._side = this._side === Side.Left ? Side.Right : Side.Left;
+    public setImage(image: string): void {
+        this.image = image;
     }
 
 }
