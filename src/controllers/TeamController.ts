@@ -8,13 +8,13 @@ export class TeamController {
     private _wss: WSSBcast;
 
     constructor(wss: WSSBcast) {
-        this._leftTeam = new Team("Left Team", "https://i.imgur.com/1ZQ3Z0M.png", Side.Left);
-        this._rightTeam = new Team("Right Team", "https://i.imgur.com/1ZQ3Z0M.png", Side.Right);
+        this._leftTeam = new Team("Left Team", "https://i.ryois.me/etsu_left.png", 0, Side.Left);
+        this._rightTeam = new Team("Right Team", "https://i.ryois.me/etsu_right.png", 0, Side.Right);
         this._wss = wss;
     }
 
-    onObjectUpdate(updatedObject: any, objectName: string) {
-        const message = JSON.stringify({"updated": objectName, "object": updatedObject});
+    onObjectUpdate(updatedObject: any) {
+        const message = JSON.stringify({"event": "team:update", "team": updatedObject});
         this._wss.broadcast(message);
         console.log(message);
     }
@@ -24,7 +24,7 @@ export class TeamController {
         const proxy = new Proxy(this._leftTeam, {
             set(target, key, value) {
                 target[key] = value;
-                vm.onObjectUpdate(target, "leftTeam");
+                vm.onObjectUpdate(target);
                 return true;
             },
         });
@@ -36,7 +36,7 @@ export class TeamController {
         const proxy = new Proxy(this._rightTeam, {
             set(target, key, value) {
                 target[key] = value;
-                vm.onObjectUpdate(target, "rightTeam");
+                vm.onObjectUpdate(target);
                 return true;
             },
         });
@@ -44,10 +44,13 @@ export class TeamController {
     }
 
     public swapSides(): void {
-        const tempTeam = this._leftTeam;
-        this._leftTeam = this._rightTeam;
-        this._rightTeam = tempTeam;
-        const message = JSON.stringify({"teamSwap": true, "teams": this.getTeams()});
+        const leftTeam = this._leftTeam;
+        const rightTeam = this._rightTeam;
+        this._leftTeam = rightTeam;
+        this._rightTeam = leftTeam;
+        this._leftTeam.setSide(Side.Left);
+        this._rightTeam.setSide(Side.Right);
+        const message = JSON.stringify({"event": "team:swap", "teams": this.getTeams()});
         this._wss.broadcast(message);
     }
 

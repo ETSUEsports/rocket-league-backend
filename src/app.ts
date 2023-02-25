@@ -29,16 +29,10 @@ app.webSocketServer = wss;
 // routes
 app.use('/', routes);
 wss.on('connection', (ws: WebSocket) => {
-  //connection is up, let's add a simple simple event
-  ws.on('message', (message: string) => {
-      //log the received message and send it back to the client
-      console.log('received: %s', message);
-      ws.send(`Hello, you sent -> ${message}`);
-  });
-
-  ws.send('CONNECTED');
-  wss.broadcast('NEW CLIENT CONNECTED');
-  ws.send(JSON.stringify({teams: teamController.getTeams()}));
+  const message = JSON.stringify({"event": "control:connected", "data": "OK"});
+  ws.send(message);
+  const message2 = JSON.stringify({"event": "control:initailize", "teams": teamController.getTeams()});
+  ws.send(message2);
 });
 
 //start our server
