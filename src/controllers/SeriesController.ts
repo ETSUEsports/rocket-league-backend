@@ -6,7 +6,7 @@ export class SeriesController {
     private _wss: WSSBcast;
 
     constructor(wss: WSSBcast) {
-        this._series = new Series(1, 5);
+        this._series = new Series(1, 5, "Series Name");
         this._wss = wss;
     }
 
@@ -73,5 +73,12 @@ export class SeriesController {
     public getSeries(): Series {
         return this._series;
     }
+
+    public setName(name: string): void {
+        this._series.setName(name);
+        const message = JSON.stringify({"event": "series:update", "series": this.getSeries()});
+        this._wss.broadcast(message);
+    }
+
     
 }

@@ -2,10 +2,12 @@
 export class Series {
     private gameNumber: number;
     private bestOf: number;
+    private name: string;
 
-    constructor(gameNumber: number, bestOf: number) {
+    constructor(gameNumber: number, bestOf: number, name: string) {
         this.gameNumber = gameNumber;
         this.bestOf = bestOf;
+        this.name = name;
     }
 
     public getGameNumber(): number {
@@ -23,5 +25,14 @@ export class Series {
     public setBestOf(bestOf: number): void {
         this.bestOf = bestOf;
     }
+
+    public getName(): string {
+        return this.name;
+    }
+
+    public setName(name: string): void {
+        this.name = name;
+    }
+    
 
 }

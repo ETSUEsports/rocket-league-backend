@@ -6,6 +6,12 @@ SeriesRoutes.get('/api/v1/series', (req, res) => {
     res.send(req.app.seriesController.series);
 });
 
+SeriesRoutes.post('/api/v1/series/name', (req, res) => {
+    req.app.seriesController.setName(req.body.name);
+    res.sendStatus(200);
+});
+
+
 SeriesRoutes.put('/api/v1/series/game', (req, res) => {
     req.app.seriesController.addGame();
     res.sendStatus(200);
