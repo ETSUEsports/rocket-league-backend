@@ -8,8 +8,8 @@ export class TeamController {
     private _wss: WSSBcast;
 
     constructor(wss: WSSBcast) {
-        this._leftTeam = new Team("Left Team", "https://i.ryois.me/etsu_left.png", 0, Side.Left);
-        this._rightTeam = new Team("Right Team", "https://i.ryois.me/etsu_right.png", 0, Side.Right);
+        this._leftTeam = new Team("Left Team", "https://i.ryois.me/etsu_left.png", 0);
+        this._rightTeam = new Team("Right Team", "https://i.ryois.me/etsu_right.png", 0);
         this._wss = wss;
     }
 
@@ -48,8 +48,6 @@ export class TeamController {
         const rightTeam = this._rightTeam;
         this._leftTeam = rightTeam;
         this._rightTeam = leftTeam;
-        this._leftTeam.setSide(Side.Left);
-        this._rightTeam.setSide(Side.Right);
         const message = JSON.stringify({"event": "team:swap", "teams": this.getTeams()});
         this._wss.broadcast(message);
     }
@@ -59,6 +57,20 @@ export class TeamController {
             leftTeam: this._leftTeam,
             rightTeam: this._rightTeam
         });
+    }
+
+    public setTeams(leftTeam: Team, rightTeam: Team): void {
+        this._leftTeam = leftTeam;
+        this._rightTeam = rightTeam;
+        const message = JSON.stringify({"event": "team:update", "teams": this.getTeams()});
+        this._wss.broadcast(message);
+    }
+
+    public resetTeams(): void {
+        this._leftTeam = new Team("Left Team", "https://i.ryois.me/etsu_left.png", 0);
+        this._rightTeam = new Team("Right Team", "https://i.ryois.me/etsu_right.png", 0);
+        const message = JSON.stringify({"event": "team:update", "teams": this.getTeams()});
+        this._wss.broadcast(message);
     }
 }
 

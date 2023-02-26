@@ -34,3 +34,13 @@ TeamRoutes.delete('/api/v1/teams/right/score', (req, res) => {
   req.app.teamController.rightTeam.removeScore();
   res.sendStatus(200);
 });
+
+TeamRoutes.post('/api/v1/teams', (req, res) => {
+  req.app.teamController.setTeams(req.body.leftTeam, req.body.rightTeam);
+  res.sendStatus(200);
+});
+
+TeamRoutes.delete('/api/v1/teams', (req, res) => {
+  req.app.teamController.resetTeams()
+  res.sendStatus(200);
+});

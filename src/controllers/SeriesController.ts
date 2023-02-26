@@ -80,5 +80,10 @@ export class SeriesController {
         this._wss.broadcast(message);
     }
 
+    public reset(): void {
+        this._series = new Series(1, 5, "Series Name");
+        const message = JSON.stringify({"event": "series:update", "series": this.getSeries()});
+        this._wss.broadcast(message);
+    }
     
 }

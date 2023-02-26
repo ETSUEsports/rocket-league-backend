@@ -1,9 +1,10 @@
 import WebSocket from 'ws';
 import http from 'http';
+import cors from 'cors';
 import express, { Application } from 'express';
 import { routes } from './routes';
 import bodyParser from 'body-parser';
-
+import path from 'path';
 import { TeamController } from './controllers/TeamController';
 import { WSSBcast } from './structures/WSBcast';
 import { SeriesController } from './controllers/SeriesController';
@@ -17,25 +18,28 @@ declare global {
   }
 }
 
-
 const app: Application = express();
 const port = 3000;
 const server = http.createServer(app);
 const wss = new WSSBcast({ server });
 const teamController = new TeamController(wss);
 const seriesController = new SeriesController(wss);
-// body-parser
+app.use(cors({
+  origin: '*'
+}));
 app.use(bodyParser.json({ limit: '50mb', type: 'application/json' }));
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 app.teamController = teamController;
 app.seriesController = seriesController;
 app.webSocketServer = wss;
+app.use('/static', express.static(path.join(__dirname, '..', 'public')))
+
 // routes
 app.use('/', routes);
 wss.on('connection', (ws: WebSocket) => {
-  const message = JSON.stringify({"event": "control:connected", "data": "OK"});
+  const message = JSON.stringify({ "event": "control:connected", "data": "OK" });
   ws.send(message);
-  const message2 = JSON.stringify({"event": "control:initailize", "teams": teamController.getTeams(), "series": seriesController.getSeries()});
+  const message2 = JSON.stringify({ "event": "control:initailize", "teams": teamController.getTeams(), "series": seriesController.getSeries() });
   ws.send(message2);
 });
 
