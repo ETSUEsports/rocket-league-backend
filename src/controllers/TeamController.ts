@@ -8,8 +8,8 @@ export class TeamController {
     private _wss: WSSBcast;
 
     constructor(wss: WSSBcast) {
-        this._leftTeam = new Team("Left Team", "https://i.ryois.me/etsu_left.png", 0);
-        this._rightTeam = new Team("Right Team", "https://i.ryois.me/etsu_right.png", 0);
+        this._leftTeam = new Team("L Team", "https://i.ryois.me/etsu.png", 0);
+        this._rightTeam = new Team("R Team", "https://i.ryois.me/etsu.png", 0);
         this._wss = wss;
     }
 
@@ -71,8 +71,8 @@ export class TeamController {
     }
 
     public resetTeams(): void {
-        this._leftTeam = new Team("Left Team", "https://i.ryois.me/etsu_left.png", 0);
-        this._rightTeam = new Team("Right Team", "https://i.ryois.me/etsu_right.png", 0);
+        this._leftTeam = new Team("L Team", "https://i.ryois.me/etsu.png", 0);
+        this._rightTeam = new Team("R Team", "https://i.ryois.me/etsu.png", 0);
         const message = JSON.stringify({"event": "team:update", "teams": this.getTeams()});
         this._wss.broadcast(message);
     }
