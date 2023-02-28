@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import { Side } from '../enums/Side';
 
 export const TeamRoutes = Router();
 
@@ -16,22 +17,26 @@ TeamRoutes.post('/api/v1/teams/swap', (req, res) => {
 });
 
 TeamRoutes.put('/api/v1/teams/left/score', (req, res) => {
-  req.app.teamController.leftTeam.addScore();
+  console.log('left score +')
+  req.app.teamController.addScore(Side.Left);
   res.sendStatus(200);
 });
 
 TeamRoutes.put('/api/v1/teams/right/score', (req, res) => {
-  req.app.teamController.rightTeam.addScore();
+  console.log('right score +')
+  req.app.teamController.addScore(Side.Right);
   res.sendStatus(200);
 });
 
 TeamRoutes.delete('/api/v1/teams/left/score', (req, res) => {
-  req.app.teamController.leftTeam.removeScore();
+  console.log('left score -')
+  req.app.teamController.removeScore(Side.Left);
   res.sendStatus(200);
 });
 
 TeamRoutes.delete('/api/v1/teams/right/score', (req, res) => {
-  req.app.teamController.rightTeam.removeScore();
+  console.log('right score -')
+  req.app.teamController.removeScore(Side.Right);
   res.sendStatus(200);
 });
 

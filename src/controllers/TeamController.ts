@@ -59,9 +59,13 @@ export class TeamController {
         });
     }
 
-    public setTeams(leftTeam: Team, rightTeam: Team): void {
-        this._leftTeam = leftTeam;
-        this._rightTeam = rightTeam;
+    public setTeams(leftTeam: any, rightTeam: any): void {
+        this._leftTeam.setName(leftTeam.name);
+        this._leftTeam.setImage(leftTeam.image);
+        this._leftTeam.setScore(leftTeam.score);
+        this._rightTeam.setName(rightTeam.name);
+        this._rightTeam.setImage(rightTeam.image);
+        this._rightTeam.setScore(rightTeam.score);
         const message = JSON.stringify({"event": "team:update", "teams": this.getTeams()});
         this._wss.broadcast(message);
     }
@@ -69,6 +73,26 @@ export class TeamController {
     public resetTeams(): void {
         this._leftTeam = new Team("Left Team", "https://i.ryois.me/etsu_left.png", 0);
         this._rightTeam = new Team("Right Team", "https://i.ryois.me/etsu_right.png", 0);
+        const message = JSON.stringify({"event": "team:update", "teams": this.getTeams()});
+        this._wss.broadcast(message);
+    }
+
+    public addScore(side: Side): void {
+        if (side == Side.Left) {
+            this._leftTeam.addScore();
+        } else if (side == Side.Right) {
+            this._rightTeam.addScore();
+        }
+        const message = JSON.stringify({"event": "team:update", "teams": this.getTeams()});
+        this._wss.broadcast(message);
+    }
+
+    public removeScore(side: Side): void {
+        if (side == Side.Left) {
+            this._leftTeam.removeScore();
+        } else if (side == Side.Right) {
+            this._rightTeam.removeScore();
+        }
         const message = JSON.stringify({"event": "team:update", "teams": this.getTeams()});
         this._wss.broadcast(message);
     }

@@ -1,5 +1,3 @@
-import { Side } from "../enums/Side";
-
 export class Team {
     private name: string;
     private image: string;
