@@ -46,5 +46,18 @@ export class Team {
     public setScore(score: number): void {
         this.score = score;
     }
+
+    public getName(): string {
+        return this.name;
+    }
+
+    public getImage(): string {
+        return this.image;
+    }
+
+    public getScore(): number {
+        return this.score;
+    }
+    
     
 }
