@@ -3,15 +3,15 @@ export const ImageRoutes = Router();
 import { Image } from '../structures/Image';
 
 ImageRoutes.get('/api/v1/images', (req, res) => {
-    res.send(req.app.imageController.toJSON());
+    res.send({error: false, data: req.app.imageController.toJSON()});
 });
 
-ImageRoutes.post('/api/v1/images', (req, res) => {
+ImageRoutes.post('/api/v1/images', async(req, res) => {
     if (!req.files) {
         return res.sendStatus(400).send({"error": "No files were uploaded."});
     }
     const file = req.files.image;
-    const image = new Image('test', 0, 0);
+    const image = new Image('test');
     req.app.imageController.addImage(image);
     res.send(image);
 });

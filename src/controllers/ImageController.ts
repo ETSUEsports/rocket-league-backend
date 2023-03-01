@@ -14,6 +14,7 @@ export class ImageController {
 
     public addImage(image: Image): void {
         this._images.push(image);
+        console.log(image)
         const message = JSON.stringify({ "event": "image:add", "data": image });
         this._wss.broadcast(message);
     }
