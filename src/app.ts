@@ -6,6 +6,8 @@ import fileUpload from 'express-fileupload';
 import { routes } from './routes';
 import bodyParser from 'body-parser';
 import path from 'path';
+import passport from 'passport';
+import DiscordStrategy from 'passport-discord';
 import { TeamController } from './controllers/TeamController';
 import { WSSBcast } from './structures/WSBcast';
 import { SeriesController } from './controllers/SeriesController';
@@ -44,7 +46,31 @@ app.webSocketServer = wss;
 app.interfaceController = interfaceController;
 app.casterController = casterController;
 app.use('/static', express.static(path.join(__dirname, '..', 'public')))
+app.use(require('express-session')({ secret: 'XU6Vw#3Qu5wSJ!$W', resave: true, saveUninitialized: true, expires: new Date(Date.now() + (30 * 86400 * 1000))}));
+app.use(passport.initialize());
+app.use(passport.session());
+const scopes = ['identify', 'email', 'guilds', 'guilds.join'];
+passport.use(new DiscordStrategy({
+  clientID: process.env.DISCORD_CLIENT_ID,
+  clientSecret: process.env.DISCORD_CLIENT_SECRET,
+  callbackURL: process.env.DISCORD_CALLBACK_URL || 'http://localhost:3000/auth/discord/callback',
+  scope: scopes
+},
+function(accessToken, refreshToken, profile, cb) {
+  if(profile.guilds.find((guild: any) => guild.id === '738393100371623977') === undefined) {
+    console.log("User is not in the server");
+    return cb(null, false);
+  } else {
+    return cb(null, profile);
+  }
+}));
+passport.serializeUser(function(user, done) {
+  done(null, { id: user.id, username: user.username, discriminator: user.discriminator });
+});
 
+passport.deserializeUser(function(user, done) {
+  done(null, user);
+});
 // routes
 app.use('/', routes);
 wss.on('connection', (ws: WebSocket) => {

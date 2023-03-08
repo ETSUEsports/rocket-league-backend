@@ -3,5 +3,5 @@ import { Router } from 'express';
 export const defaultRoute = Router();
 
 defaultRoute.get('/', (req, res) => {
-  res.send("Hello World!");
+  res.sendStatus(204);
 });
