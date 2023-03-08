@@ -1,39 +1,29 @@
 import { Router } from 'express';
+import { UploadedFile } from 'express-fileupload';
+import fs from 'fs';
 export const ImageRoutes = Router();
-import { Image } from '../structures/Image';
 
-ImageRoutes.get('/api/v1/images', (req, res) => {
-    res.send({error: false, data: req.app.imageController.toJSON()});
+ImageRoutes.get('/api/v1/images', async (req, res) => {
+    let output = [];
+    fs.readdirSync(process.cwd() + '/public/').forEach(file => {
+        output.push({ name: file, public_url: encodeURI(`${req.protocol}://${req.get('host')}/static/${file}`) });
+    });
+    res.send(output);
 });
 
-ImageRoutes.post('/api/v1/images', async(req, res) => {
+ImageRoutes.post('/api/v1/images', async (req, res) => {
     if (!req.files) {
-        return res.sendStatus(400).send({"error": "No files were uploaded."});
+        return res.sendStatus(400).send({ "error": "No files were uploaded." });
     }
-    const file = req.files.image;
-    const image = new Image('test');
-    req.app.imageController.addImage(image);
-    res.send(image);
-});
-
-ImageRoutes.delete('/api/v1/images/:name', (req, res) => {
-    const name = req.params.name;
-    const image = req.app.imageController.getImage(name);
-    if (image) {
-        req.app.imageController.deleteImage(image);
-        res.send(image);
-    } else {
-        res.status(404).send();
+    if (!req.files.image) {
+        return res.sendStatus(400).send({ "error": "No image was sent" });
     }
-});
-
-ImageRoutes.get('/api/v1/images/:name', (req, res) => {
-    const name = req.params.name;
-    const image = req.app.imageController.getImage(name);
-    if (image) {
-        res.send(image);
-    } else {
-        res.status(404).send();
+    const file = req.files.image as UploadedFile;
+    console.log(`Uploaded file ${file.name} to ${process.cwd() + '/public/' + file.name}`)
+    file.mv(process.cwd() + '/public/' + file.name), function (err) {
+        if (err) {
+            return res.status(500).send(err);
+        }
     }
+    res.send({ status: "ok", name: file.name, path: process.cwd() + '/public/' + file.name, size: file.size, mimetype: file.mimetype, encoding: file.encoding, public_url: encodeURI(`${req.protocol}://${req.get('host')}/static/${file.name}`) });
 });
-

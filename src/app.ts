@@ -11,7 +11,6 @@ import { WSSBcast } from './structures/WSBcast';
 import { SeriesController } from './controllers/SeriesController';
 import { InterfaceController } from './controllers/InterfaceController';
 import { CasterController } from './controllers/CasterController';
-import { ImageController } from './controllers/ImageController';
 
 declare global {
   namespace Express {
@@ -20,7 +19,6 @@ declare global {
       seriesController: SeriesController,
       interfaceController: InterfaceController,
       casterController: CasterController,
-      imageController: ImageController,
       webSocketServer: WSSBcast
     }
   }
@@ -33,7 +31,6 @@ const wss = new WSSBcast({ server });
 const teamController = new TeamController(wss);
 const seriesController = new SeriesController(wss);
 const casterController = new CasterController(wss);
-const imageController = new ImageController(wss);
 const interfaceController = new InterfaceController(teamController.leftTeam, teamController.rightTeam, casterController.leftCaster, casterController.rightCaster);
 app.use(cors({
   origin: '*'
@@ -46,7 +43,6 @@ app.seriesController = seriesController;
 app.webSocketServer = wss;
 app.interfaceController = interfaceController;
 app.casterController = casterController;
-app.imageController = imageController;
 app.use('/static', express.static(path.join(__dirname, '..', 'public')))
 
 // routes
