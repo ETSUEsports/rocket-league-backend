@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { UploadedFile } from 'express-fileupload';
 import fs from 'fs';
 export const ImageRoutes = Router();
+import discordAuth  from '../auth';
 
 ImageRoutes.get('/images', async (req, res) => {
     let output = [];
@@ -12,7 +13,7 @@ ImageRoutes.get('/images', async (req, res) => {
     res.send(output);
 });
 
-ImageRoutes.post('/images', async (req, res) => {
+ImageRoutes.post('/images', discordAuth(), async (req, res) => {
     if (!req.files) {
         return res.sendStatus(400).send({ "error": "No files were uploaded." });
     }
@@ -29,7 +30,7 @@ ImageRoutes.post('/images', async (req, res) => {
     res.send({ status: "ok", name: file.name, path: process.cwd() + '/public/' + file.name, size: file.size, mimetype: file.mimetype, encoding: file.encoding, public_url: encodeURI(`${req.protocol}://${req.get('host')}/static/${file.name}`) });
 });
 
-ImageRoutes.delete('/images/:name', async (req, res) => {
+ImageRoutes.delete('/images/:name', discordAuth(), async (req, res) => {
     const name = req.params.name;
     if (!name) {
         return res.sendStatus(400).send({ "error": "No name was sent" });

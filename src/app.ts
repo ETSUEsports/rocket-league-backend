@@ -6,6 +6,7 @@ import fileUpload from 'express-fileupload';
 import { routes } from './routes';
 import bodyParser from 'body-parser';
 import path from 'path';
+import cookieParser from 'cookie-parser';
 import passport from 'passport';
 import DiscordStrategy from 'passport-discord';
 import { TeamController } from './controllers/TeamController';
@@ -13,7 +14,6 @@ import { WSSBcast } from './structures/WSBcast';
 import { SeriesController } from './controllers/SeriesController';
 import { InterfaceController } from './controllers/InterfaceController';
 import { CasterController } from './controllers/CasterController';
-
 declare global {
   namespace Express {
     interface Application {
@@ -21,7 +21,7 @@ declare global {
       seriesController: SeriesController,
       interfaceController: InterfaceController,
       casterController: CasterController,
-      webSocketServer: WSSBcast
+      webSocketServer: WSSBcast,
     }
   }
 }
@@ -29,14 +29,27 @@ declare global {
 const app: Application = express();
 const port = 3000;
 const server = http.createServer(app);
+switch(process.env.NODE_ENV) {
+  case 'production':
+    console.log("Running in production mode")
+    app.use(cors({
+      origin: 'https://etsuesports.ryois.net',
+      credentials: true,
+    }));
+    break;
+  case 'development':
+    console.log("Running in development mode")
+    app.use(cors({
+      origin: 'http://localhost:8080',
+      credentials: true,
+    }));
+    break;
+}
 const wss = new WSSBcast({ server });
 const teamController = new TeamController(wss);
 const seriesController = new SeriesController(wss);
 const casterController = new CasterController(wss);
 const interfaceController = new InterfaceController(teamController.leftTeam, teamController.rightTeam, casterController.leftCaster, casterController.rightCaster);
-app.use(cors({
-  origin: '*'
-}));
 app.use(bodyParser.json({ limit: '50mb', type: 'application/json' }));
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 app.use(fileUpload());
@@ -46,6 +59,7 @@ app.webSocketServer = wss;
 app.interfaceController = interfaceController;
 app.casterController = casterController;
 app.use('/static', express.static(path.join(__dirname, '..', 'public')))
+app.use(cookieParser());
 app.use(require('express-session')({ secret: 'XU6Vw#3Qu5wSJ!$W', resave: true, saveUninitialized: true, expires: new Date(Date.now() + (30 * 86400 * 1000))}));
 app.use(passport.initialize());
 app.use(passport.session());

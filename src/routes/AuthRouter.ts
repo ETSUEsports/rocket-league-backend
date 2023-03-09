@@ -6,6 +6,14 @@ AuthRoutes.get('/auth/strategies', function (req, res) {
     res.send({ "strategies": [{ name: "discord", url: "/api/v1/auth/strategies/discord", callback: "/api/v1/auth/strategies/discord/callback", logout: "/api/v1/auth/strategies/discord/logout" }] })
 });
 
+AuthRoutes.get('/auth/me', function (req, res) { 
+    if (req.isAuthenticated()) {
+        res.send({ "status": "success", "user": req.user })
+    } else {
+        res.send({ "status": "error" })
+    }
+});
+
 AuthRoutes.get('/auth/strategies/discord', passport.authenticate('discord'));
 AuthRoutes.get('/auth/strategies/discord/callback', passport.authenticate('discord', {
     failureRedirect: '/auth/strategies/discord/error'

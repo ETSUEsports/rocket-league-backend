@@ -5,7 +5,8 @@ declare global {
         interface Request {
             user?: Record<string, any>,
             session?: Record<string, any>
-            logout?: (cb: (err: Error) => void) => void
+            logout?: (cb: (err: Error) => void) => void,
+            isAuthenticated?: () => boolean
         }
     }
 }
