@@ -53,7 +53,7 @@ const scopes = ['identify', 'email', 'guilds', 'guilds.join'];
 passport.use(new DiscordStrategy({
   clientID: process.env.DISCORD_CLIENT_ID,
   clientSecret: process.env.DISCORD_CLIENT_SECRET,
-  callbackURL: process.env.DISCORD_CALLBACK_URL || 'http://localhost:3000/auth/discord/callback',
+  callbackURL: process.env.DISCORD_CALLBACK_URL || 'http://localhost:3000/api/v1/auth/strategies/discord/callback',
   scope: scopes
 },
 function(accessToken, refreshToken, profile, cb) {
@@ -72,7 +72,7 @@ passport.deserializeUser(function(user, done) {
   done(null, user);
 });
 // routes
-app.use('/', routes);
+app.use('/api/v1', routes);
 wss.on('connection', (ws: WebSocket) => {
   const message = JSON.stringify({ "event": "control:connected", "data": "OK" });
   ws.send(message);

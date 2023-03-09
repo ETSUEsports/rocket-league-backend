@@ -3,15 +3,16 @@ import { UploadedFile } from 'express-fileupload';
 import fs from 'fs';
 export const ImageRoutes = Router();
 
-ImageRoutes.get('/api/v1/images', async (req, res) => {
+ImageRoutes.get('/images', async (req, res) => {
     let output = [];
     fs.readdirSync(process.cwd() + '/public/').forEach(file => {
+        if(file == ".empty-directory") return;
         output.push({ name: file, public_url: encodeURI(`${req.protocol}://${req.get('host')}/static/${file}`) });
     });
     res.send(output);
 });
 
-ImageRoutes.post('/api/v1/images', async (req, res) => {
+ImageRoutes.post('/images', async (req, res) => {
     if (!req.files) {
         return res.sendStatus(400).send({ "error": "No files were uploaded." });
     }
@@ -28,7 +29,7 @@ ImageRoutes.post('/api/v1/images', async (req, res) => {
     res.send({ status: "ok", name: file.name, path: process.cwd() + '/public/' + file.name, size: file.size, mimetype: file.mimetype, encoding: file.encoding, public_url: encodeURI(`${req.protocol}://${req.get('host')}/static/${file.name}`) });
 });
 
-ImageRoutes.delete('/api/v1/images/:name', async (req, res) => {
+ImageRoutes.delete('/images/:name', async (req, res) => {
     const name = req.params.name;
     if (!name) {
         return res.sendStatus(400).send({ "error": "No name was sent" });
