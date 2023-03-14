@@ -89,3 +89,4 @@ tests/cases/user/prettier/prettier
 public/*
 !public/etsu.png
 !public/.empty-directory
+.env

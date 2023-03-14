@@ -1,3 +1,5 @@
+import * as dotenv from 'dotenv';
+dotenv.config();
 import WebSocket from 'ws';
 import http from 'http';
 import cors from 'cors';
