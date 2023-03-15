@@ -19,7 +19,7 @@ AuthRoutes.get('/auth/strategies/discord/callback', passport.authenticate('disco
     failureRedirect: '/auth/strategies/discord/error'
 }), function (req, res) {
     if(process.env.NODE_ENV === 'production') {
-        res.redirect('https://etsuesports.ryois.net/rocket-league-backend/api/v1/auth/strategies/discord/success');
+        res.redirect(`${process.env.PRODUCTION_BACKEND_URL}/api/v1/auth/strategies/discord/success`);
     } else {
         res.redirect('/api/v1/auth/strategies/discord/success');
     }

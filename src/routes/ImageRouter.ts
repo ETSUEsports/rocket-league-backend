@@ -9,7 +9,11 @@ ImageRoutes.get('/images', async (req, res, next) => {
     try {
         fs.readdirSync(process.cwd() + '/public/').forEach(file => {
             if(file == ".empty-directory") return;
-            output.push({ name: file, public_url: encodeURI(`${req.protocol}://${req.get('host')}/static/${file}`) });
+            if(process.env.NODE_ENV) {
+                output.push({ name: file, public_url: encodeURI(`${process.env.PRODUCTION_BACKEND_URL}/static/${file}`) });
+            } else {
+                output.push({ name: file, public_url: encodeURI(`${req.protocol}://${req.get('host')}/static/${file}`) });
+            }
         });
     } catch (e) {
         return next(e);

@@ -35,7 +35,7 @@ switch(process.env.NODE_ENV) {
   case 'production':
     console.log("Running in production mode")
     app.use(cors({
-      origin: 'https://etsuesports.ryois.net',
+      origin: process.env.PRODUCTION_BASE_URL,
       credentials: true,
     }));
     break;

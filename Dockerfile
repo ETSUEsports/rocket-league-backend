@@ -11,6 +11,7 @@ RUN npm run build
 FROM node:18-alpine
 WORKDIR /usr
 COPY package.json ./
+COPY public ./public
 RUN npm install --omit=dev
 COPY --from=0 /usr/dist .
 EXPOSE 3000
