@@ -16,6 +16,7 @@ import { WSSBcast } from './structures/WSBcast';
 import { SeriesController } from './controllers/SeriesController';
 import { InterfaceController } from './controllers/InterfaceController';
 import { CasterController } from './controllers/CasterController';
+import fs from 'fs';
 declare global {
   namespace Express {
     interface Application {
@@ -27,7 +28,11 @@ declare global {
     }
   }
 }
-
+// make directory if not exists public
+const dir = path.join(__dirname, '..', 'public');
+if (!fs.existsSync(dir)) {
+  fs.mkdirSync(dir);
+}
 const app: Application = express();
 const port = 3000;
 const server = http.createServer(app);
@@ -70,13 +75,14 @@ app.casterController = casterController;
 app.use('/static', express.static(path.join(__dirname, '..', 'public')))
 app.use(cookieParser());
 app.use(require('express-session')({ secret: 'XU6Vw#3Qu5wSJ!$W', resave: true, saveUninitialized: true, expires: new Date(Date.now() + (30 * 86400 * 1000))}));
-app.use(passport.initialize());
+app.use(passport.initialize()); 
 app.use(passport.session());
 const scopes = ['identify', 'email', 'guilds', 'guilds.join'];
+console.log(`Discord Client ID: ${process.env.DISCORD_CLIENT_ID} | Callback URL: ${process.env.DISCORD_CALLBACK_URL}`)
 passport.use(new DiscordStrategy({
   clientID: process.env.DISCORD_CLIENT_ID,
   clientSecret: process.env.DISCORD_CLIENT_SECRET,
-  callbackURL: process.env.DISCORD_CALLBACK_URL || 'http://localhost:3000/api/v1/auth/strategies/discord/callback',
+  callbackURL: process.env.DISCORD_CALLBACK_URL,
   scope: scopes
 },
 function(accessToken, refreshToken, profile, cb) {
