@@ -78,7 +78,7 @@ app.use(require('express-session')({ secret: 'XU6Vw#3Qu5wSJ!$W', resave: true, s
 app.use(passport.initialize()); 
 app.use(passport.session());
 const scopes = ['identify', 'email', 'guilds', 'guilds.join'];
-console.log(`Discord Client ID: ${process.env.DISCORD_CLIENT_ID} | Callback URL: ${process.env.DISCORD_CALLBACK_URL}`)
+console.log(`Discord Client ID: ${process.env.DISCORD_CLIENT_ID} | Callback URL: ${process.env.DISCORD_CALLBACK_URL} | Required Guild: ${process.env.DISCORD_GUILD_ID}`)
 passport.use(new DiscordStrategy({
   clientID: process.env.DISCORD_CLIENT_ID,
   clientSecret: process.env.DISCORD_CLIENT_SECRET,
@@ -86,7 +86,7 @@ passport.use(new DiscordStrategy({
   scope: scopes
 },
 function(accessToken, refreshToken, profile, cb) {
-  if(profile.guilds.find((guild: any) => guild.id === '738393100371623977') === undefined) {
+  if(profile.guilds.find((guild: any) => guild.id === process.env.DISCORD_GUILD_ID) === undefined) {
     console.log("User is not in the server");
     return cb(null, false);
   } else {
