@@ -28,11 +28,6 @@ declare global {
     }
   }
 }
-// make directory if not exists public
-const dir = path.join(__dirname, '..', 'public');
-if (!fs.existsSync(dir)) {
-  fs.mkdirSync(dir);
-}
 const app: Application = express();
 const port = 3000;
 const server = http.createServer(app);
