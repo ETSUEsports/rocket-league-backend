@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { Side } from '../enums/Side';
-import discordAuth from '../auth';
+import { discordAuth, multiAuth } from '../auth';
 
 export const TeamRoutes = Router();
 
@@ -12,30 +12,30 @@ TeamRoutes.get('/teams/right', (req, res) => {
   res.send(req.app.teamController.rightTeam);
 });
 
-TeamRoutes.post('/teams/swap', discordAuth(), (req, res) => {
+TeamRoutes.post('/teams/swap', multiAuth(), (req, res) => {
   req.app.teamController.swapSides();
   res.sendStatus(200);
 });
 
-TeamRoutes.put('/teams/left/score', discordAuth(), (req, res) => {
+TeamRoutes.put('/teams/left/score', multiAuth(), (req, res) => {
   console.log('left score +')
   req.app.teamController.addScore(Side.Left);
   res.sendStatus(200);
 });
 
-TeamRoutes.put('/teams/right/score', discordAuth(), (req, res) => {
+TeamRoutes.put('/teams/right/score', multiAuth(), (req, res) => {
   console.log('right score +')
   req.app.teamController.addScore(Side.Right);
   res.sendStatus(200);
 });
 
-TeamRoutes.delete('/teams/left/score', discordAuth(), (req, res) => {
+TeamRoutes.delete('/teams/left/score', multiAuth(), (req, res) => {
   console.log('left score -')
   req.app.teamController.removeScore(Side.Left);
   res.sendStatus(200);
 });
 
-TeamRoutes.delete('/teams/right/score', discordAuth(), (req, res) => {
+TeamRoutes.delete('/teams/right/score', multiAuth(), (req, res) => {
   console.log('right score -')
   req.app.teamController.removeScore(Side.Right);
   res.sendStatus(200);

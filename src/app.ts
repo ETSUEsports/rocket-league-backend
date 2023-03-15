@@ -11,12 +11,12 @@ import path from 'path';
 import cookieParser from 'cookie-parser';
 import passport from 'passport';
 import DiscordStrategy from 'passport-discord';
+import HeaderAPIKeyStrategy from 'passport-headerapikey';
 import { TeamController } from './controllers/TeamController';
 import { WSSBcast } from './structures/WSBcast';
 import { SeriesController } from './controllers/SeriesController';
 import { InterfaceController } from './controllers/InterfaceController';
 import { CasterController } from './controllers/CasterController';
-import fs from 'fs';
 declare global {
   namespace Express {
     interface Application {
@@ -90,6 +90,14 @@ function(accessToken, refreshToken, profile, cb) {
     return cb(null, false);
   } else {
     return cb(null, profile);
+  }
+}));
+passport.use(new HeaderAPIKeyStrategy({ header: 'Authorization', prefix: 'x-api-key ' }, false, function(apikey, done) {
+  if(apikey === process.env.API_KEY) {
+    const profile = { id: '0', username: 'APIKEY', discriminator: '0000'}
+    return done(null, profile);
+  } else {
+    return done(null, false);
   }
 }));
 passport.serializeUser(function(user, done) {

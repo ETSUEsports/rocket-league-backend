@@ -47,6 +47,7 @@
     "module-alias": "^2.2.2",
     "passport": "^0.6.0",
     "passport-discord": "^0.1.4",
+    "passport-headerapikey": "^1.2.2",
     "ts-node": "^10.9.1",
     "ws": "^8.12.0"
   }

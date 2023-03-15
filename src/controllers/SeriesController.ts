@@ -53,7 +53,7 @@ export class SeriesController {
     public addGame(): void {
         // add game, cannot be greater than best of 
         if (this._series.getGameNumber() >= this._series.getBestOf()) {
-            return;
+            throw new Error("Cannot add game, game number is greater than best of");
         }
         this._series.setGameNumber(this._series.getGameNumber() + 1);
         const message = JSON.stringify({"event": "series:update", "series": this.getSeries()});
@@ -63,7 +63,7 @@ export class SeriesController {
     public deleteGame(): void {
         // delete game, cannot be less than 1
         if (this._series.getGameNumber() <= 1) {
-            return;
+            throw new Error("Cannot delete game, game number is less than 1");
         }
         this._series.setGameNumber(this._series.getGameNumber() - 1);
         const message = JSON.stringify({"event": "series:update", "series": this.getSeries()});

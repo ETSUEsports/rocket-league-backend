@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { UploadedFile } from 'express-fileupload';
 import fs from 'fs';
 export const ImageRoutes = Router();
-import discordAuth  from '../auth';
+import { discordAuth }  from '../auth';
 
 ImageRoutes.get('/images', async (req, res, next) => {
     let output = [];

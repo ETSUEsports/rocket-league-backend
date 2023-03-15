@@ -1,5 +1,6 @@
 import { Router } from 'express';
-import discordAuth from '../auth';
+import { discordAuth } from '../auth';
+
 export const CasterRoutes = Router();
 
 CasterRoutes.get('/casters', (req, res) => {

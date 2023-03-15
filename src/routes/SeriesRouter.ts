@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import discordAuth from '../auth';
+import { discordAuth, multiAuth } from '../auth';
 
 export const SeriesRoutes = Router();
 
@@ -19,13 +19,23 @@ SeriesRoutes.post('/series', discordAuth(), (req, res) => {
     res.sendStatus(200);
 });
 
-SeriesRoutes.put('/series/game', discordAuth(), (req, res) => {
-    req.app.seriesController.addGame();
+SeriesRoutes.put('/series/game', multiAuth(), (req, res) => {
+    try{
+        req.app.seriesController.addGame();
+    }
+    catch(e){
+        return res.status(400).send(e.message);
+    }
     res.sendStatus(200);
 });
 
-SeriesRoutes.delete('/series/game', discordAuth(), (req, res) => {
-    req.app.seriesController.deleteGame();
+SeriesRoutes.delete('/series/game', multiAuth(), (req, res) => {
+    try{
+        req.app.seriesController.deleteGame();
+    }
+    catch(e){
+        return res.status(400).send(e.message);
+    }
     res.sendStatus(200);
 });
 
@@ -34,7 +44,7 @@ SeriesRoutes.put('/series/bestof', discordAuth(), (req, res) => {
     res.sendStatus(200);
 });
 
-SeriesRoutes.put('/series/game', discordAuth(), (req, res) => {
+SeriesRoutes.patch('/series/game', discordAuth(), (req, res) => {
     req.app.seriesController.setGameNumber(req.body.gameNumber);
     res.sendStatus(200);
 });
