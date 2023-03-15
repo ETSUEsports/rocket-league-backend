@@ -12,7 +12,7 @@ ImageRoutes.get('/images', async (req, res, next) => {
             output.push({ name: file, public_url: encodeURI(`${req.protocol}://${req.get('host')}/static/${file}`) });
         });
     } catch (e) {
-        next(e);
+        return next(e);
     }
     res.send(output);
 });
@@ -34,7 +34,7 @@ ImageRoutes.post('/images', discordAuth(), async (req, res, next) => {
         }
     } catch(e) {
         console.error(e);
-        next(e);
+        return next(e);
     }
     res.send({ status: "ok", name: file.name, path: process.cwd() + '/public/' + file.name, size: file.size, mimetype: file.mimetype, encoding: file.encoding, public_url: encodeURI(`${req.protocol}://${req.get('host')}/static/${file.name}`) });
 });
@@ -48,7 +48,7 @@ ImageRoutes.delete('/images/:name', discordAuth(), async (req, res, next) => {
         fs.unlinkSync(process.cwd() + '/public/' + name);
     } catch(e) {
         console.error(e);
-        next(e);
+        return next(e);
     }
     
     console.log(`Deleted file ${name} from ${process.cwd() + '/public/' + name}`)
