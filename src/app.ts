@@ -46,6 +46,13 @@ switch(process.env.NODE_ENV) {
       credentials: true,
     }));
     break;
+  default:
+    console.log("Running in development mode")
+    app.use(cors({
+      origin: 'http://localhost:8080',
+      credentials: true,
+    }));
+    break;
 }
 const wss = new WSSBcast({ server });
 const teamController = new TeamController(wss);
