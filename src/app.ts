@@ -102,6 +102,13 @@ passport.deserializeUser(function(user, done) {
 });
 // routes
 app.use('/api/v1', routes);
+
+// express error handler
+app.use((err: any, req: any, res: any, next: any) => {
+  console.error(err.stack);
+  res.status(500).send('Something broke!');
+});
+
 wss.on('connection', (ws: WebSocket) => {
   const message = JSON.stringify({ "event": "control:connected", "data": "OK" });
   ws.send(message);
