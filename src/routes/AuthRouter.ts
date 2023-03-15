@@ -18,7 +18,11 @@ AuthRoutes.get('/auth/strategies/discord', passport.authenticate('discord'));
 AuthRoutes.get('/auth/strategies/discord/callback', passport.authenticate('discord', {
     failureRedirect: '/auth/strategies/discord/error'
 }), function (req, res) {
-    res.redirect('/api/v1/auth/strategies/discord/success');
+    if(process.env.NODE_ENV === 'production') {
+        res.redirect('https://etsuesports.ryois.net/rocket-league-backend/api/v1/auth/strategies/discord/success');
+    } else {
+        res.redirect('/api/v1/auth/strategies/discord/success');
+    }
 });
 AuthRoutes.get('/auth/strategies/discord/success', function (req, res) {
     const popupScript = `
