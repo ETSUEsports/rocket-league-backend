@@ -67,7 +67,11 @@ app.seriesController = seriesController;
 app.webSocketServer = wss;
 app.interfaceController = interfaceController;
 app.casterController = casterController;
-app.use('/static', express.static(path.join(__dirname, '..', 'public')))
+if(process.env.NODE_ENV === 'production') {
+  app.use('/static', express.static(path.join(__dirname, '.', 'public')))
+} else {
+  app.use('/static', express.static(path.join(__dirname, '..', 'public')))
+}
 app.use(cookieParser());
 app.use(require('express-session')({ secret: 'XU6Vw#3Qu5wSJ!$W', resave: true, saveUninitialized: true, expires: new Date(Date.now() + (30 * 86400 * 1000))}));
 app.use(passport.initialize()); 
