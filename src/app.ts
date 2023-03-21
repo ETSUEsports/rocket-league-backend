@@ -119,7 +119,7 @@ app.use((err: any, req: any, res: any, next: any) => {
 wss.on('connection', (ws: WebSocket) => {
   const message = JSON.stringify({ "event": "control:connected", "data": "OK" });
   ws.send(message);
-  const message2 = JSON.stringify({ "event": "control:initailize", "teams": teamController.getTeams(), "series": seriesController.getSeries() });
+  const message2 = JSON.stringify({ "event": "control:initailize", "teams": teamController.getTeams(), "series": seriesController.getSeries(), "casters": casterController.getCasters() });
   ws.send(message2);
 
   ws.on('message', (message: any) => {
@@ -147,3 +147,9 @@ wss.on('connection', (ws: WebSocket) => {
 server.listen(process.env.PORT || port, () => {
   console.log(`Server started on port ${port}`);
 });
+
+
+// WebSocket Heartbeat for Cloudflare
+setInterval(() => {
+  wss.broadcast(JSON.stringify({ "event": "heartbeat", "data": "OK" }));
+}, 5000);

@@ -17,7 +17,7 @@ export class CasterController {
         const proxy = new Proxy(this._leftCaster, {
             set(target, key, value) {
                 target[key] = value;
-                vm.onObjectUpdate(target);
+                vm.onObjectUpdate(target, 'left');
                 return true;
             },
         });
@@ -29,15 +29,15 @@ export class CasterController {
         const proxy = new Proxy(this._rightCaster, {
             set(target, key, value) {
                 target[key] = value;
-                vm.onObjectUpdate(target);
+                vm.onObjectUpdate(target, 'right');
                 return true;
             },
         });
         return proxy;
     }
 
-    onObjectUpdate(updatedObject: any) {
-        const message = JSON.stringify({"event": "caster:update", "caster": updatedObject});
+    onObjectUpdate(updatedObject: any, side: string) {  
+        const message = JSON.stringify({"event": "caster:update", "caster": updatedObject, "side": side});
         this._wss.broadcast(message);
         console.log(message);
     }
