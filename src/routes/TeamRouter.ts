@@ -46,6 +46,16 @@ TeamRoutes.post('/teams', discordAuth(), (req, res) => {
   res.sendStatus(200);
 });
 
+TeamRoutes.post('/teams/left', discordAuth(), (req, res) => {
+  req.app.teamController.setLeftTeam(req.body);
+  res.sendStatus(200);
+});
+
+TeamRoutes.post('/teams/right', discordAuth(), (req, res) => {
+  req.app.teamController.setRightTeam(req.body);
+  res.sendStatus(200);
+});
+
 TeamRoutes.delete('/teams', discordAuth(), (req, res) => {
   req.app.teamController.resetTeams()
   res.sendStatus(200);

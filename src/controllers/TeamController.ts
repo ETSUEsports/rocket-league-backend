@@ -70,6 +70,22 @@ export class TeamController {
         this._wss.broadcast(message);
     }
 
+    public setLeftTeam(leftTeam: any): void {
+        this._leftTeam.setName(leftTeam.name);
+        this._leftTeam.setImage(leftTeam.image);
+        this._leftTeam.setScore(leftTeam.score);
+        const message = JSON.stringify({"event": "team:update", "teams": this.getTeams()});
+        this._wss.broadcast(message);
+    }
+
+    public setRightTeam(rightTeam: any): void {
+        this._rightTeam.setName(rightTeam.name);
+        this._rightTeam.setImage(rightTeam.image);
+        this._rightTeam.setScore(rightTeam.score);
+        const message = JSON.stringify({"event": "team:update", "teams": this.getTeams()});
+        this._wss.broadcast(message);
+    }
+
     public resetTeams(): void {
         this._leftTeam = new Team("L Team", "https://i.ryois.me/etsu.png", 0);
         this._rightTeam = new Team("R Team", "https://i.ryois.me/etsu.png", 0);
