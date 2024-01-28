@@ -4,11 +4,13 @@ export class CasterController {
 
     private _leftCaster: Caster;
     private _rightCaster: Caster;
+    private _id: number;
     private _wss: WSSBcast;
 
-    constructor(_wss: WSSBcast) {
+    constructor(_wss: WSSBcast, id: number) {
         this._leftCaster = new Caster('Left Caster');
         this._rightCaster = new Caster('Right Caster');
+        this._id = id;
         this._wss = _wss;
     }
 
@@ -37,7 +39,7 @@ export class CasterController {
     }
 
     onObjectUpdate(updatedObject: any, side: string) {  
-        const message = JSON.stringify({"event": "caster:update", "caster": updatedObject, "side": side});
+        const message = JSON.stringify({"event": "caster:update","game": this._id, "caster": updatedObject, "side": side});
         this._wss.broadcast(message);
         console.log(message);
     }
@@ -47,7 +49,7 @@ export class CasterController {
         const rightCaster = this._rightCaster;
         this._leftCaster = rightCaster;
         this._rightCaster = leftCaster;
-        const message = JSON.stringify({"event": "caster:swap", "casters": this.getCasters()});
+        const message = JSON.stringify({"event": "caster:swap","game": this._id, "casters": this.getCasters()});
         this._wss.broadcast(message);
     }
 

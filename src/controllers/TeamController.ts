@@ -5,16 +5,18 @@ export class TeamController {
 
     private _leftTeam: Team;
     private _rightTeam: Team;
+    private _id: number;
     private _wss: WSSBcast;
 
-    constructor(wss: WSSBcast) {
+    constructor(wss: WSSBcast, id: number) {
         this._leftTeam = new Team("L Team", "https://i.ryois.me/etsu.png", 0);
         this._rightTeam = new Team("R Team", "https://i.ryois.me/etsu.png", 0);
+        this._id = id;
         this._wss = wss;
     }
 
     onObjectUpdate(updatedObject: any) {
-        const message = JSON.stringify({"event": "team:update", "team": updatedObject});
+        const message = JSON.stringify({"event": "team:update", "game": this._id, "team": updatedObject});
         this._wss.broadcast(message);
         console.log(message);
     }
@@ -48,7 +50,7 @@ export class TeamController {
         const rightTeam = this._rightTeam;
         this._leftTeam = rightTeam;
         this._rightTeam = leftTeam;
-        const message = JSON.stringify({"event": "team:swap", "teams": this.getTeams()});
+        const message = JSON.stringify({"event": "team:swap", "game": this._id, "teams": this.getTeams()});
         this._wss.broadcast(message);
     }
 
@@ -66,7 +68,7 @@ export class TeamController {
         this._rightTeam.setName(rightTeam.name);
         this._rightTeam.setImage(rightTeam.image);
         this._rightTeam.setScore(rightTeam.score);
-        const message = JSON.stringify({"event": "team:update", "teams": this.getTeams()});
+        const message = JSON.stringify({"event": "team:update", "game": this._id,  "teams": this.getTeams()});
         this._wss.broadcast(message);
     }
 
@@ -74,7 +76,7 @@ export class TeamController {
         this._leftTeam.setName(leftTeam.name);
         this._leftTeam.setImage(leftTeam.image);
         this._leftTeam.setScore(leftTeam.score);
-        const message = JSON.stringify({"event": "team:update", "teams": this.getTeams()});
+        const message = JSON.stringify({"event": "team:update", "game": this._id,  "teams": this.getTeams()});
         this._wss.broadcast(message);
     }
 
@@ -82,14 +84,14 @@ export class TeamController {
         this._rightTeam.setName(rightTeam.name);
         this._rightTeam.setImage(rightTeam.image);
         this._rightTeam.setScore(rightTeam.score);
-        const message = JSON.stringify({"event": "team:update", "teams": this.getTeams()});
+        const message = JSON.stringify({"event": "team:update", "game": this._id,  "teams": this.getTeams()});
         this._wss.broadcast(message);
     }
 
     public resetTeams(): void {
         this._leftTeam = new Team("L Team", "https://i.ryois.me/etsu.png", 0);
         this._rightTeam = new Team("R Team", "https://i.ryois.me/etsu.png", 0);
-        const message = JSON.stringify({"event": "team:update", "teams": this.getTeams()});
+        const message = JSON.stringify({"event": "team:update", "game": this._id,  "teams": this.getTeams()});
         this._wss.broadcast(message);
     }
 
@@ -99,7 +101,7 @@ export class TeamController {
         } else if (side == Side.Right) {
             this._rightTeam.addScore();
         }
-        const message = JSON.stringify({"event": "team:update", "teams": this.getTeams()});
+        const message = JSON.stringify({"event": "team:update", "game": this._id,  "teams": this.getTeams()});
         this._wss.broadcast(message);
     }
 
@@ -109,7 +111,7 @@ export class TeamController {
         } else if (side == Side.Right) {
             this._rightTeam.removeScore();
         }
-        const message = JSON.stringify({"event": "team:update", "teams": this.getTeams()});
+        const message = JSON.stringify({"event": "team:update", "game": this._id,  "teams": this.getTeams()});
         this._wss.broadcast(message);
     }
 }

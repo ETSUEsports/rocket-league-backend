@@ -3,15 +3,17 @@ import { WSSBcast } from '../structures/WSBcast';
 export class SeriesController {
 
     private _series: Series;
+    private _id: number;
     private _wss: WSSBcast;
 
-    constructor(wss: WSSBcast) {
+    constructor(wss: WSSBcast, id: number) {
         this._series = new Series(1, 5, "Series Name");
+        this._id = id;
         this._wss = wss;
     }
 
     onObjectUpdate(updatedObject: any) {
-        const message = JSON.stringify({"event": "series:update", "series": updatedObject});
+        const message = JSON.stringify({"event": "series:update","game": this._id, "series": updatedObject});
         this._wss.broadcast(message);
         console.log(message);
     }
@@ -36,7 +38,7 @@ export class SeriesController {
             gameNumber = this._series.getBestOf();
         }
         this._series.setGameNumber(gameNumber);
-        const message = JSON.stringify({"event": "series:update", "series": this.getSeries()});
+        const message = JSON.stringify({"event": "series:update","game": this._id, "series": this.getSeries()});
         this._wss.broadcast(message);
     }
 
@@ -46,7 +48,7 @@ export class SeriesController {
             bestOf = 1;
         }
         this._series.setBestOf(bestOf);
-        const message = JSON.stringify({"event": "series:update", "series": this.getSeries()});
+        const message = JSON.stringify({"event": "series:update","game": this._id, "series": this.getSeries()});
         this._wss.broadcast(message);
     }
 
@@ -56,7 +58,7 @@ export class SeriesController {
             throw new Error("Cannot add game, game number is greater than best of");
         }
         this._series.setGameNumber(this._series.getGameNumber() + 1);
-        const message = JSON.stringify({"event": "series:update", "series": this.getSeries()});
+        const message = JSON.stringify({"event": "series:update","game": this._id, "series": this.getSeries()});
         this._wss.broadcast(message);
     }
 
@@ -66,7 +68,7 @@ export class SeriesController {
             throw new Error("Cannot delete game, game number is less than 1");
         }
         this._series.setGameNumber(this._series.getGameNumber() - 1);
-        const message = JSON.stringify({"event": "series:update", "series": this.getSeries()});
+        const message = JSON.stringify({"event": "series:update","game": this._id, "series": this.getSeries()});
         this._wss.broadcast(message);
     }
 
@@ -76,13 +78,13 @@ export class SeriesController {
 
     public setName(name: string): void {
         this._series.setName(name);
-        const message = JSON.stringify({"event": "series:update", "series": this.getSeries()});
+        const message = JSON.stringify({"event": "series:update","game": this._id, "series": this.getSeries()});
         this._wss.broadcast(message);
     }
 
     public reset(): void {
         this._series = new Series(1, 5, "Series Name");
-        const message = JSON.stringify({"event": "series:update", "series": this.getSeries()});
+        const message = JSON.stringify({"event": "series:update","game": this._id, "series": this.getSeries()});
         this._wss.broadcast(message);
     }
     
